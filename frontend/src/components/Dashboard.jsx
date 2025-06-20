@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { getProducts, getLots, getWasteRecords, getWarehouses } from '../services/api';
 import ReportTable from './ReportTable';
 import { FaBox, FaWarehouse, FaExclamationTriangle, FaTrash } from 'react-icons/fa';
-import { Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Pie, Bar, Line } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, BarElement, LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, BarElement, LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 function Dashboard() {
   const [products, setProducts] = useState([]);
@@ -80,6 +80,44 @@ function Dashboard() {
     ],
   };
 
+  const wasteByDate = waste.reduce((acc, w) => {
+    const date = new Date(w.date).toLocaleDateString();
+    acc[date] = (acc[date] || 0) + w.quantity;
+    return acc;
+  }, {});
+
+  const barData = {
+    labels: Object.keys(wasteByDate),
+    datasets: [
+      {
+        label: 'Waste Quantity',
+        data: Object.values(wasteByDate),
+        backgroundColor: '#EF4444',
+        borderColor: '#B91C1C',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const stockTrend = lots.reduce((acc, lot) => {
+    const date = new Date(lot.createdAt).toLocaleDateString();
+    acc[date] = (acc[date] || 0) + lot.quantity;
+    return acc;
+  }, {});
+
+  const lineData = {
+    labels: Object.keys(stockTrend),
+    datasets: [
+      {
+        label: 'Stock Trend',
+        data: Object.values(stockTrend),
+        fill: false,
+        borderColor: '#2563EB',
+        tension: 0.1,
+      },
+    ],
+  };
+
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold text-blue-800 mb-6 flex items-center">
@@ -133,6 +171,48 @@ function Dashboard() {
             options={{
               plugins: {
                 legend: { position: 'right' },
+                tooltip: { backgroundColor: '#2563EB' },
+              },
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Waste by Date - Bar Chart */}
+      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+        <h2 className="text-lg font-semibold text-blue-600 mb-4 flex items-center">
+          <FaTrash className="mr-2" /> Waste by Date
+        </h2>
+        <div className="h-64">
+          <Bar
+            data={barData}
+            options={{
+              scales: {
+                y: { beginAtZero: true },
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: { backgroundColor: '#B91C1C' },
+              },
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Stock Trend - Line Chart */}
+      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+        <h2 className="text-lg font-semibold text-blue-600 mb-4 flex items-center">
+          <FaBox className="mr-2" /> Stock Trend
+        </h2>
+        <div className="h-64">
+          <Line
+            data={lineData}
+            options={{
+              scales: {
+                y: { beginAtZero: true },
+              },
+              plugins: {
+                legend: { display: false },
                 tooltip: { backgroundColor: '#2563EB' },
               },
             }}

@@ -30,3 +30,6 @@ export const transferStock = (data) => api.post('/transactions/transfer', data);
 export const getTransactions = () => api.get('/transactions');
 export const loginUser = (data) => api.post('/users/login', data);
 export const registerUser = (data) => api.post('/users/register', data);
+export const getUsers = () => api.get('/users');
+export const updateUser = (id, data) => api.put(`/users/${id}`, data);
+export const deleteUser = (id) => api.delete(`/users/${id}`);

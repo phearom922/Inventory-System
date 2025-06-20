@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FaHome, FaArrowDown, FaArrowUp, FaTrash, FaChartBar, FaUsers, FaSignOutAlt, FaBars } from 'react-icons/fa';
+import { FaHome, FaArrowDown, FaArrowUp, FaTrash, FaChartBar, FaUsers, FaSignOutAlt, FaBars, FaExchangeAlt, FaFileAlt } from 'react-icons/fa';
 import {jwtDecode} from 'jwt-decode';
 
 function Sidebar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState(null);
-  const [isOpen, setIsOpen] = useState(false); // สำหรับ collapse Sidebar บนมือถือ
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -108,6 +108,28 @@ function Sidebar() {
               >
                 <FaChartBar className="mr-2" />
                 <span className={`${isOpen ? 'block' : 'hidden'} md:block`}>Reports</span>
+              </NavLink>
+              <NavLink
+                to="/transfer"
+                className={({ isActive }) =>
+                  `flex items-center p-2 rounded hover:bg-blue-700 ${
+                    isActive ? 'bg-blue-700' : ''
+                  }`
+                }
+              >
+                <FaExchangeAlt className="mr-2" />
+                <span className={`${isOpen ? 'block' : 'hidden'} md:block`}>Transfer Stock</span>
+              </NavLink>
+              <NavLink
+                to="/transfer-report"
+                className={({ isActive }) =>
+                  `flex items-center p-2 rounded hover:bg-blue-700 ${
+                    isActive ? 'bg-blue-700' : ''
+                  }`
+                }
+              >
+                <FaFileAlt className="mr-2" />
+                <span className={`${isOpen ? 'block' : 'hidden'} md:block`}>Transfer Report</span>
               </NavLink>
               {userRole === 'admin' && (
                 <NavLink
