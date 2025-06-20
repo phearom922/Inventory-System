@@ -39,7 +39,7 @@ function Login() {
         {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-blue-600 mb-1 flex items-center">
+            <label className=" text-blue-600 mb-1 flex items-center">
               <FaUser className="mr-2" /> Username
             </label>
             <input
@@ -53,7 +53,7 @@ function Login() {
             />
           </div>
           <div>
-            <label className="block text-blue-600 mb-1 flex items-center">
+            <label className=" text-blue-600 mb-1 flex items-center">
               <FaLock className="mr-2" /> Password
             </label>
             <input
