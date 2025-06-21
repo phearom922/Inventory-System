@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FaHome, FaArrowDown, FaArrowUp, FaTrash, FaChartBar, FaUsers, FaSignOutAlt, FaBars, FaExchangeAlt, FaFileAlt } from 'react-icons/fa';
+import { FaHome, FaArrowDown, FaArrowUp, FaTrash, FaChartBar, FaUsers, FaSignOutAlt, FaBars, FaExchangeAlt, FaFileAlt, FaBox, FaWarehouse } from 'react-icons/fa';
 import {jwtDecode} from 'jwt-decode';
 
 function Sidebar() {
@@ -130,6 +130,28 @@ function Sidebar() {
               >
                 <FaFileAlt className="mr-2" />
                 <span className={`${isOpen ? 'block' : 'hidden'} md:block`}>Transfer Report</span>
+              </NavLink>
+              <NavLink
+                to="/product-management"
+                className={({ isActive }) =>
+                  `flex items-center p-2 rounded hover:bg-blue-700 ${
+                    isActive ? 'bg-blue-700' : ''
+                  }`
+                }
+              >
+                <FaBox className="mr-2" />
+                <span className={`${isOpen ? 'block' : 'hidden'} md:block`}>Product Management</span>
+              </NavLink>
+              <NavLink
+                to="/warehouse-management"
+                className={({ isActive }) =>
+                  `flex items-center p-2 rounded hover:bg-blue-700 ${
+                    isActive ? 'bg-blue-700' : ''
+                  }`
+                }
+              >
+                <FaWarehouse className="mr-2" />
+                <span className={`${isOpen ? 'block' : 'hidden'} md:block`}>Warehouse Management</span>
               </NavLink>
               {userRole === 'admin' && (
                 <NavLink

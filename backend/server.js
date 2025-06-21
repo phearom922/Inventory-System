@@ -1,10 +1,11 @@
+// backend/server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
-const lotRoutes = require('./routes/lotRoutes');
+const lotRoutes = require('./routes/lotRoutes'); // ตรวจสอบว่า import ถูกต้อง
 const warehouseRoutes = require('./routes/warehouseRoutes');
 const wasteRoutes = require('./routes/wasteRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
@@ -19,7 +20,7 @@ app.use(express.json());
 // Routes
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/lots', lotRoutes);
+app.use('/api/lots', lotRoutes); // ตรวจสอบว่า row นี้มี
 app.use('/api/warehouses', warehouseRoutes);
 app.use('/api/waste', wasteRoutes);
 app.use('/api/transactions', transactionRoutes);

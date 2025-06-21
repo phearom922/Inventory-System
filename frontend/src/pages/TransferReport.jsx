@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { getTransactions, getWarehouses } from '../services/api';
-import { FaExchangeAlt, FaFilter } from 'react-icons/fa';
+import { FaExchangeAlt, FaFilter, FaFileExcel } from 'react-icons/fa';
 import ReportTable from '../components/ReportTable';
+import * as XLSX from 'xlsx';
 
 function TransferReport() {
   const [transactions, setTransactions] = useState([]);
@@ -43,13 +44,51 @@ function TransferReport() {
     return fromMatch && toMatch && startDateMatch && endDateMatch;
   });
 
+  const handleExportExcel = () => {
+    // เตรียมข้อมูลสำหรับ Excel
+    const exportData = filteredTransactions.map(t => ({
+      'Lot ID': t.lotId?.lotId || 'N/A',
+      'Product': t.lotId?.productId?.name || 'N/A',
+      'Quantity': t.quantity || 0,
+      'From Warehouse': t.fromWarehouseId?.name || 'N/A',
+      'To Warehouse': t.toWarehouseId?.name || 'N/A',
+      'Date': t.date ? new Date(t.date).toLocaleDateString() : 'N/A'
+    }));
+
+    // สร้าง worksheet และ workbook
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Transfer Report');
+
+    // ตั้งค่าความกว้างคอลัมน์
+    ws['!cols'] = [
+      { wch: 15 }, // Lot ID
+      { wch: 20 }, // Product
+      { wch: 10 }, // Quantity
+      { wch: 20 }, // From Warehouse
+      { wch: 20 }, // To Warehouse
+      { wch: 15 }  // Date
+    ];
+
+    // สร้างไฟล์ Excel และดาวน์โหลด
+    XLSX.write(wb, `Transfer_Report_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
+
   if (loading) return <div className="text-center p-4 text-blue-600">Loading...</div>;
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold text-blue-800 mb-6 flex items-center">
-        <FaExchangeAlt className="mr-2" /> Transfer Report
-      </h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-blue-800 flex items-center">
+          <FaExchangeAlt className="mr-2" /> Transfer Report
+        </h1>
+        <button
+          onClick={handleExportExcel}
+          className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 flex items-center"
+        >
+          <FaFileExcel className="mr-2" /> Export to Excel
+        </button>
+      </div>
 
       {/* Filters */}
       <div className="bg-white p-6 rounded-lg shadow-md mb-6">
