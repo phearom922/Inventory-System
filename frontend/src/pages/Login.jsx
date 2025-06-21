@@ -2,6 +2,7 @@ import { useState } from 'react';
   import { useNavigate } from 'react-router-dom';
   import { loginUser } from '../services/api';
   import { FaUser, FaLock } from 'react-icons/fa';
+  import { jwtDecode } from 'jwt-decode'; // เพิ่มการ import
 
   function Login() {
     const [formData, setFormData] = useState({
@@ -24,18 +25,20 @@ import { useState } from 'react';
         const response = await loginUser(formData);
         const { token } = response.data;
         localStorage.setItem('token', token);
-        // Decode JWT payload อย่างปลอดภัย
-        const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-        if (payload.exp && Date.now() >= payload.exp * 1000) {
+        // Decode token ด้วย jwt-decode
+        const decoded = jwtDecode(token);
+        if (decoded.exp && Date.now() >= decoded.exp * 1000) {
           setError('Token expired immediately, please contact admin');
           localStorage.removeItem('token');
         } else {
-          // รีเฟรชหน้าเพื่อให้ AuthProvider ทำงาน
-          window.location.href = '/'; // ใช้ window.location.href แทน navigate
+          // ใช้ navigate แทน window.location.href
+          navigate('/');
         }
       } catch (err) {
         setError(err.response?.data?.message || 'Login failed');
         setLoading(false);
+      } finally {
+        setLoading(false); // รีเซ็ต loading แม้จะมี error
       }
     };
 

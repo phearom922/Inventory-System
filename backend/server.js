@@ -3,12 +3,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+
 const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
 const lotRoutes = require('./routes/lotRoutes'); // ตรวจสอบว่า import ถูกต้อง
 const warehouseRoutes = require('./routes/warehouseRoutes');
 const wasteRoutes = require('./routes/wasteRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
+const branchRoutes = require('./routes/branchRoutes');
 
 dotenv.config();
 const app = express();
@@ -24,6 +26,7 @@ app.use('/api/lots', lotRoutes); // ตรวจสอบว่า row นี้
 app.use('/api/warehouses', warehouseRoutes);
 app.use('/api/waste', wasteRoutes);
 app.use('/api/transactions', transactionRoutes);
+app.use('/api/branches', branchRoutes);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
