@@ -1,14 +1,17 @@
+const mongoose = require('mongoose'); // เพิ่มบนสุดของไฟล์
 const Branch = require('../models/Branch');
 
-  const getBranches = async (req, res) => {
-    try {
-      console.log('Fetching branches with branchFilter:', req.branchFilter); // Log เพื่อตรวจสอบ
-      const branches = await Branch.find({ _id: { $in: req.branchFilter || [] } });
-      res.json(branches);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  };
+const getBranches = async (req, res) => {
+  try {
+    console.log('Fetching branches with branchFilter:', req.branchFilter);
+    const objectIds = (req.branchFilter || []).map(id => mongoose.Types.ObjectId(id));
+    const branches = await Branch.find({ _id: { $in: objectIds } });
+    res.json(branches);
+  } catch (error) {
+    console.error('Branch fetch error:', error); // เพิ่ม log error
+    res.status(500).json({ message: error.message });
+  }
+};
 
   const createBranch = async (req, res) => {
     try {

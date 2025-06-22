@@ -1,11 +1,16 @@
 const Product = require('../models/Product');
-
+  
   const getProducts = async (req, res) => {
     console.log('branchFilter:', req.branchFilter, 'query:', req.query.branchId);
     try {
       let branchFilter = req.branchFilter || [];
       if (req.query.branchId) {
-        branchFilter = Array.isArray(req.query.branchId) ? req.query.branchId : [req.query.branchId];
+        // Accept comma-separated string or array
+        if (typeof req.query.branchId === 'string') {
+          branchFilter = req.query.branchId.split(',');
+        } else {
+          branchFilter = Array.isArray(req.query.branchId) ? req.query.branchId : [req.query.branchId];
+        }
       }
       if (branchFilter.length === 0) {
         return res.status(400).json({ message: 'No branch filter provided' });
