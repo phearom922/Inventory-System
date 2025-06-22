@@ -93,7 +93,8 @@ function BranchManagement() {
   };
 
   if (loading) return <div className="text-center p-4 text-blue-600">Loading...</div>;
-console.log("Fetching products for branchId:", branchId);
+  console.log("Fetching branches for branchFilter:", branchFilter);
+
 
   return (
     <div className="container mx-auto p-6">
