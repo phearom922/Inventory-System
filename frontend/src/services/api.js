@@ -57,8 +57,10 @@ export const getUsers = (params = {}) => api.get('/api/users', { params }); // �
 export const updateUser = (id, data) => api.put(`/api/users/${id}`, data); // เพิ่ม /api
 export const deleteUser = (id) => api.delete(`/api/users/${id}`); // เพิ่ม /api
 
+
 // สำหรับ Branch
 export const getBranches = (params = {}) => api.get('/api/branches', { params });
 export const createBranch = (data) => api.post('/api/branches', data);
 export const updateBranch = (id, data) => api.put(`/api/branches/${id}`, data);
 export const deleteBranch = (id) => api.delete(`/api/branches/${id}`);
+

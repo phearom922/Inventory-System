@@ -1,3 +1,4 @@
+// frontend/src/components/BranchManagement.jsx
 import React, { useState, useEffect } from 'react';
 import { getBranches, createBranch, updateBranch, deleteBranch } from '../services/api';
 import { FaBuilding, FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
@@ -16,30 +17,34 @@ function BranchManagement() {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    console.log('[BranchManagement] Received branchFilter:', branchFilter);
     if (!branchFilter || branchFilter.length === 0) {
       console.warn('[BranchManagement] Waiting for branchFilter...');
+      setLoading(false);
+      setBranches([]);
       return;
     }
 
     const fetchBranches = async () => {
       try {
-        console.log('[BranchManagement] Fetching with:', branchFilter);
+        console.log('[BranchManagement] Fetching with branchFilter:', branchFilter);
         const response = await getBranches({ branchId: branchFilter });
+        console.log('[BranchManagement] Response data:', response.data);
         setBranches(response.data || []);
         setLoading(false);
       } catch (err) {
-        setError('Failed to fetch branches');
+        console.error('[BranchManagement] Error fetching branches:', err);
+        setError('Failed to fetch branches: ' + (err.message || 'Network Error'));
         setLoading(false);
       }
     };
-
     fetchBranches();
   }, [branchFilter]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (loading) {
-        setError('Loading took too long. Check your token or branch assignment.');
+        setError('Loading took too long. Check your server or network.');
         setLoading(false);
       }
     }, 10000);
@@ -93,8 +98,7 @@ function BranchManagement() {
   };
 
   if (loading) return <div className="text-center p-4 text-blue-600">Loading...</div>;
-  console.log("Fetching branches for branchFilter:", branchFilter);
-
+  if (error) return <div className="text-center p-4 text-red-500">{error}</div>;
 
   return (
     <div className="container mx-auto p-6">
@@ -165,26 +169,30 @@ function BranchManagement() {
             </tr>
           </thead>
           <tbody>
-            {branches.map(branch => (
-              <tr key={branch._id} className="hover:bg-blue-50">
-                <td className="border p-2">{branch.name}</td>
-                <td className="border p-2">{branch.location}</td>
-                <td className="border p-2 flex space-x-2">
-                  <button
-                    onClick={() => handleEdit(branch)}
-                    className="text-blue-600 hover:underline flex items-center"
-                  >
-                    <FaEdit className="mr-1" /> Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(branch._id)}
-                    className="text-red-600 hover:underline flex items-center"
-                  >
-                    <FaTrash className="mr-1" /> Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {branches.length === 0 ? (
+              <tr><td colSpan="3" className="border p-2 text-center">No branches found</td></tr>
+            ) : (
+              branches.map(branch => (
+                <tr key={branch._id} className="hover:bg-blue-50">
+                  <td className="border p-2">{branch.name}</td>
+                  <td className="border p-2">{branch.location}</td>
+                  <td className="border p-2 flex space-x-2">
+                    <button
+                      onClick={() => handleEdit(branch)}
+                      className="text-blue-600 hover:underline flex items-center"
+                    >
+                      <FaEdit className="mr-1" /> Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(branch._id)}
+                      className="text-red-600 hover:underline flex items-center"
+                    >
+                      <FaTrash className="mr-1" /> Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

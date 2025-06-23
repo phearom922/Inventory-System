@@ -5,6 +5,7 @@ const User = require('../models/User');
 /**
  * Authentication middleware
  */
+
 const auth = async (req, res, next) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -12,7 +13,7 @@ const auth = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.userId).populate('branchId');
-    if (!user) return res.status(401).json({ message: 'Invalid token' });
+    if (!user) return res.status(401).json({ message: 'Invalid token'});
 
     const branchIds = (decoded.branchIds && decoded.branchIds.length
       ? decoded.branchIds
@@ -40,7 +41,9 @@ const restrictTo = (...roles) => (req, res, next) => {
 };
 
 const restrictToBranch = () => (req, res, next) => {
+  console.log('[Middleware] User role:', req.user.role, 'BranchIds:', req.branchIds);
   req.branchFilter = req.user.role === 'admin' ? req.branchIds : [req.branchIds[0]];
+  console.log('[Middleware] Set branchFilter:', req.branchFilter);
   next();
 };
 
