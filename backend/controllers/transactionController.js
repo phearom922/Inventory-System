@@ -1,5 +1,6 @@
 const Transaction = require('../models/Transaction');
 const Lot = require('../models/Lot');
+const Warehouse = require('../models/Warehouse');
 
 const transferStock = async (req, res) => {
   try {
